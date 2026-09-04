@@ -1,0 +1,6 @@
+codigo,nombre,apellido,semestre,promedio,activo,correo
+1001,Ana,García,3,4.5,true,ana@correo.com
+1002,Carlos,Pérez,5,3.8,true,carlos@correo.com
+1003,Luisa,Rodríguez,2,4.9,false,luisa@correo.com
+1004,Juan,Martínez,6,4.2,true,juan@correo.com
+1005,Sofía,López,1,3.5,false,sofia@correo.com

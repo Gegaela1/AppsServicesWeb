@@ -1,0 +1,37 @@
+[
+  {
+    "id": "1001",
+    "nombre_completo": "Ana García",
+    "semestre": 3,
+    "promedio": 4.5,
+    "estado": "Activo"
+  },
+  {
+    "id": "1002",
+    "nombre_completo": "Carlos Pérez",
+    "semestre": 5,
+    "promedio": 3.8,
+    "estado": "Activo"
+  },
+  {
+    "id": "1003",
+    "nombre_completo": "Luisa Rodríguez",
+    "semestre": 2,
+    "promedio": 4.9,
+    "estado": "Inactivo"
+  },
+  {
+    "id": "1004",
+    "nombre_completo": "Juan Martínez",
+    "semestre": 6,
+    "promedio": 4.2,
+    "estado": "Activo"
+  },
+  {
+    "id": "1005",
+    "nombre_completo": "Sofía López",
+    "semestre": 1,
+    "promedio": 3.5,
+    "estado": "Inactivo"
+  }
+]
