@@ -1,0 +1,7 @@
+{
+  "procesados": 400,
+  "normalizados": 394,
+  "errores_normalizacion": 6,
+  "validos_localmente": 190,
+  "rechazados_localmente": 204
+}
