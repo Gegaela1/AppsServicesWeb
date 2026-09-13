@@ -8,6 +8,11 @@ BASE_DIR = Path(__file__).parent
 RUTA_A = BASE_DIR / "datos" / "proveedor_a.json"
 RUTA_B = BASE_DIR / "datos" / "proveedor_b.csv"
 
+import requests
+
+URL_BASE = "https://appsweb.quantaiot.co"
+
+EQUIPO = "EQUIPO-13-APPSWEB"
 
 # Funciones para normalizar y validar registros (temperatura, viento, etc.)
 
@@ -21,6 +26,7 @@ def ms_a_kmh(viento_ms):
 
 def normalizar_proveedor_a(registro):
     return {
+        "traza": registro["provider_record_id"],
         "ciudad": registro["station"]["city_name"],
         "pais": registro["station"]["country_code"],
         "latitud": registro["location"]["lat"],
@@ -39,6 +45,7 @@ def normalizar_proveedor_a(registro):
 
 def normalizar_proveedor_b(registro):
     return {
+        "traza": registro["record_code"],
         "ciudad": registro["municipality"],
         "pais": registro["country"],
         "latitud": float(registro["latitude_deg"]),
@@ -102,21 +109,45 @@ def guardar_json(ruta, datos):
             ensure_ascii=False
         )
 
+def enviar_medicion(registro):
+
+    url = f"{URL_BASE}/api/v1/mediciones"
+
+    headers = {
+        "Content-Type": "application/json",
+        "X-Equipo": EQUIPO
+    }
+
+    respuesta = requests.post(
+        url,
+        headers=headers,
+        json=registro,
+        timeout=10
+    )
+
+    return respuesta
+
 def generar_reporte():
 
     return {
-        "procesados": 400,
-        "normalizados": len(todos_normalizados),
-        "errores_normalizacion": len(
-            errores_normalizacion
-        ),
-        "validos_localmente": len(
-            validos_localmente
-        ),
-        "rechazados_localmente": len(
-            rechazados_localmente
-        )
-    }
+    "procesados": 400,
+    "normalizados": len(
+        todos_normalizados
+    ),
+    "errores_normalizacion": len(
+        errores_normalizacion
+    ),
+    "validos_localmente": len(
+        validos_localmente
+    ),
+    "rechazados_localmente": len(
+        rechazados_localmente
+    ),
+    "enviados": enviados,
+    "aceptados_api": aceptados_api,
+    "rechazados_api": rechazados_api,
+    "errores_comunicacion": errores_comunicacion
+}
 
 
 # proveedor A
@@ -302,6 +333,98 @@ RUTA_REPORTE = (
     / "reporte.json"
 )
 
+
+enviados = 0
+aceptados_api = 0
+rechazados_api = 0
+errores_comunicacion = 0
+
+print("\n=== ENVIO A API ===")
+
+for registro in validos_localmente:
+
+    try:
+
+        respuesta = enviar_medicion(
+            registro
+        )
+
+        enviados += 1
+
+        if respuesta.status_code == 201:
+
+            aceptados_api += 1
+
+        elif respuesta.status_code in (
+            400,
+            409,
+            422
+        ):
+
+            rechazados_api += 1
+
+        else:
+
+            errores_comunicacion += 1
+
+    except Exception:
+
+        errores_comunicacion += 1
+
+        print(
+    f"Enviados: {enviados}"
+)
+
+print(
+    f"Aceptados API: "
+    f"{aceptados_api}"
+)
+
+print(
+    f"Rechazados API: "
+    f"{rechazados_api}"
+)
+
+print(
+    f"Errores comunicacion: "
+    f"{errores_comunicacion}"
+)
+
+def consultar_mediciones():
+
+    url = (
+        f"{URL_BASE}"
+        f"/api/v1/mediciones"
+    )
+
+    params = {
+        "equipo": EQUIPO
+    }
+
+    return requests.get(
+        url,
+        params=params,
+        timeout=10
+    )
+
+print("\n=== CONSULTA FINAL ===")
+
+try:
+
+    respuesta_get = (
+        consultar_mediciones()
+    )
+
+    print(
+        f"GET: "
+        f"{respuesta_get.status_code}"
+    )
+
+except Exception as error:
+
+    print(
+        f"Error GET: {error}"
+    )
 reporte = generar_reporte()
 
 guardar_json(

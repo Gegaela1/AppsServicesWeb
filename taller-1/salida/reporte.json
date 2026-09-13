@@ -3,5 +3,9 @@
   "normalizados": 394,
   "errores_normalizacion": 6,
   "validos_localmente": 190,
-  "rechazados_localmente": 204
+  "rechazados_localmente": 204,
+  "enviados": 190,
+  "aceptados_api": 0,
+  "rechazados_api": 190,
+  "errores_comunicacion": 0
 }
