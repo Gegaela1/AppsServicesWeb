@@ -2,10 +2,12 @@ from fastapi import FastAPI
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from api.estudiantes import router as estudiantes_router
+from api.medicion import router as medicion_router
 from database import SessionLocal
 
 app = FastAPI(title="API de estudiantes")
 app.include_router(estudiantes_router)
+app.include_router(medicion_router)
 
 
 @app.get("/")
